@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: censo
+      POSTGRES_DB: censo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
+    volumes:
+      - datos_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U censo -d censo"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrador:
+    build:
+      context: .
+      target: migrador
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://censo:${POSTGRES_PASSWORD}@db:5432/censo?schema=public
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD en .env}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      target: app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://censo:${POSTGRES_PASSWORD}@db:5432/censo?schema=public
+      SESSION_PASSWORD: ${SESSION_PASSWORD:?Define SESSION_PASSWORD en .env}
+    depends_on:
+      migrador:
+        condition: service_completed_successfully
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMINIO: ${DOMINIO:?Define DOMINIO en .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - datos_caddy:/data
+      - config_caddy:/config
+    depends_on:
+      - app
+
+volumes:
+  datos_postgres:
+  datos_caddy:
+  config_caddy:

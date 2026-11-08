@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+src/generated
+.env*
+*.md
+docs
+Dockerfile
+docker-compose.yml
+Caddyfile
+# Los datos de demostración nunca deben llegar a producción.
+prisma/datos-prueba.ts

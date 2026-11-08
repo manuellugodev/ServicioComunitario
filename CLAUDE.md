@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas), 4 (M3 Familias), 5 (M4 Habitantes), 6 (M5 Talentos), 7 (M6 Proyectos), 8 (M7 Reportes) and 9 (role restrictions and backups) are built. Next is Stage 10 (test data and Docker). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas), 4 (M3 Familias), 5 (M4 Habitantes), 6 (M5 Talentos), 7 (M6 Proyectos), 8 (M7 Reportes) and 9 (role restrictions and backups) are built. Stage 10 (demo data and Docker files) is written, but the Docker image has not been built yet because the development PC has no Docker. Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 
@@ -26,6 +26,8 @@ npm run build
 npm run lint
 npx prisma db seed     # creates the first admin (user "admin") from ADMIN_PASSWORD; no-op if an admin exists
 npx prisma studio
+npm run db:demo            # loads fictitious demo data; optional viviendas count: npm run db:demo -- 300
+npm run db:demo:borrar     # removes all demo data; run before loading real data
 ```
 
 There is no automated test suite. A stage is verified with build, lint and exercising the running app.
@@ -89,4 +91,5 @@ Form actions have the signature `(estado: EstadoFormulario, formData: FormData)`
 - Database naming: PascalCase Prisma models and camelCase fields, mapped with `@@map` and `@map` to the snake_case names in the data dictionary.
 - shadcn/ui uses the `base-nova` style on Base UI, not Radix: compose with the `render` prop rather than `asChild`, and pass `nativeButton={false}` when a `Button` renders a link. `components.json` aliases point to `@/shared/...`, so `npx shadcn@latest add <componente>` installs there.
 - Backups use `pg_dump`, so the server needs it installed (`PG_DUMP_PATH` if it's not on the `PATH`). Restore steps are in `docs/RESPALDOS.md`.
+- Deployment steps are in `docs/DESPLIEGUE.md`. The image must stay on Debian: Alpine's Node 26 images have no `pg_dump` 16, and a dump from a newer `pg_dump` can't be restored with PostgreSQL 16 tools. The `migrador` service applies migrations and the admin seed before the app starts.
 - Don't use `'use cache'` for database reads: it would run the query during `next build`, when a Docker build has no database. Read after `await connection()` or `requerirSesion()`, inside `<Suspense>`.

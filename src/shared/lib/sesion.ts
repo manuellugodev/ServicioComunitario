@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { connection } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getIronSession, type SessionOptions } from "iron-session";
@@ -19,6 +20,8 @@ const opciones: SessionOptions = {
 };
 
 async function leerSesion() {
+  // iron-session usa Date.now() al descifrar, que no se permite al preparar un enlace.
+  await connection();
   return getIronSession<DatosSesion>(await cookies(), opciones);
 }
 

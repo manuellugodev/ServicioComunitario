@@ -44,7 +44,9 @@ function Leyenda() {
 
 export function PiramidePoblacional({ datos }: { datos: GrupoEdad[] }) {
   const filas = datos.map(({ grupo, mujeres, hombres }) => ({ grupo, mujeres, hombres: -hombres }));
-  const maximo = Math.max(1, ...datos.flatMap(({ mujeres, hombres }) => [mujeres, hombres]));
+  const mayor = Math.max(1, ...datos.flatMap(({ mujeres, hombres }) => [mujeres, hombres]));
+  const paso = Math.ceil(mayor / 2);
+  const maximo = paso * 2;
   const alto = datos.length * 22 + 40;
 
   return (
@@ -68,6 +70,7 @@ export function PiramidePoblacional({ datos }: { datos: GrupoEdad[] }) {
             <XAxis
               type="number"
               domain={[-maximo, maximo]}
+              ticks={[-maximo, -paso, 0, paso, maximo]}
               allowDecimals={false}
               tickFormatter={(valor: number) => String(Math.abs(valor))}
               tick={TEXTO_EJE}

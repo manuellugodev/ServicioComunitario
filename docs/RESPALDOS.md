@@ -2,6 +2,8 @@
 
 Un respaldo contiene todos los datos personales y de salud de la comunidad. Guárdalo en un lugar con acceso restringido y nunca lo compartas por canales abiertos.
 
+En una instalación con Docker, los comandos están en `docs/DESPLIEGUE.md`.
+
 ## Generar un respaldo
 
 1. Entra al sistema como Administrador.
