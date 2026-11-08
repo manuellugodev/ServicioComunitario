@@ -7,6 +7,12 @@ export function aTextoFecha(fecha: Date) {
   return fecha.toISOString().slice(0, 10);
 }
 
+// La fecha de nacimiento más reciente con la que hoy ya se tiene esa edad.
+export function fechaDeCumplir(edad: number) {
+  const [anio, mes, dia] = hoyEnCaracas().split("-").map(Number);
+  return new Date(Date.UTC(anio - edad, mes - 1, dia));
+}
+
 export function calcularEdad(fechaNacimiento: Date) {
   const [anioHoy, mesHoy, diaHoy] = hoyEnCaracas().split("-").map(Number);
   const [anio, mes, dia] = aTextoFecha(fechaNacimiento).split("-").map(Number);

@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas), 4 (M3 Familias), 5 (M4 Habitantes), 6 (M5 Talentos) and 7 (M6 Proyectos) are built. Next is Stage 8 (M7 Reportes). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas), 4 (M3 Familias), 5 (M4 Habitantes), 6 (M5 Talentos), 7 (M6 Proyectos) and 8 (M7 Reportes) are built. Next is Stage 9 (role restrictions and backups). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 

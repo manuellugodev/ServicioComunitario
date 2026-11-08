@@ -29,7 +29,7 @@ const ENLACES: Enlace[] = [
   { href: "/habitantes", etiqueta: "Habitantes", icono: Users, listo: true },
   { href: "/talentos", etiqueta: "Talentos", icono: Wrench, listo: true },
   { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban, listo: true },
-  { href: "/reportes", etiqueta: "Reportes", icono: FileText, listo: false },
+  { href: "/reportes", etiqueta: "Reportes", icono: FileText, listo: true },
   { href: "/usuarios", etiqueta: "Usuarios", icono: UserCog, listo: true },
   { href: "/configuracion", etiqueta: "Configuración", icono: Settings, listo: true },
 ];
