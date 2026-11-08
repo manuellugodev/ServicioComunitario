@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas) and 4 (M3 Familias) are built. Next is Stage 5 (M4 Habitantes), which also records the head of family (RF-05). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas), 4 (M3 Familias) and 5 (M4 Habitantes) are built. Next is Stage 6 (M5 Talentos). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 
@@ -41,7 +41,7 @@ npx prisma migrate deploy
 npx prisma generate
 ```
 
-Review the SQL before applying it. Each module adds its own tables in its own migration. Initial catalog rows go in the migration as `INSERT`s so they also reach deployment. Constraints Prisma can't express go in the same SQL by hand, such as the partial unique index for one `parentesco = JEFE` per `nucleo_familiar`.
+Review the SQL before applying it. Each module adds its own tables in its own migration. Initial catalog rows go in the migration as `INSERT`s so they also reach deployment. Constraints Prisma can't express go in the same SQL by hand, and later diffs must not drop them: the partial unique index `habitante_un_jefe_activo_por_nucleo` (one active `JEFE` per family), and the checks `habitante_nacionalidad_valida` and `nucleo_familiar_ingreso_no_negativo`.
 
 Environment variables are listed in `.env.example`. `COOKIE_SEGURA="false"` is required when serving over plain http, otherwise the session cookie is not stored.
 

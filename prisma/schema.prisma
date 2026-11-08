@@ -32,6 +32,7 @@ model Usuario {
   bitacora       Bitacora[]
   viviendas      Vivienda[]
   nucleos        NucleoFamiliar[]
+  habitantes     Habitante[]
 
   @@map("usuario")
 }
@@ -112,9 +113,77 @@ model NucleoFamiliar {
   creadoPorId     Int      @map("creado_por")
   vivienda        Vivienda @relation(fields: [viviendaId], references: [id])
   creadoPor       Usuario  @relation(fields: [creadoPorId], references: [id])
+  habitantes      Habitante[]
 
   @@index([viviendaId])
   @@map("nucleo_familiar")
+}
+
+enum Sexo {
+  F
+  M
+
+  @@map("sexo")
+}
+
+enum Parentesco {
+  JEFE
+  CONYUGE
+  HIJO
+  PADRE_MADRE
+  HERMANO
+  NIETO
+  OTRO
+
+  @@map("parentesco")
+}
+
+enum NivelEducativo {
+  SIN_ESCOLARIDAD
+  PRIMARIA
+  BACHILLERATO
+  TSU
+  UNIVERSITARIO
+  POSTGRADO
+
+  @@map("nivel_educativo")
+}
+
+enum EstadoHabitante {
+  ACTIVO
+  MUDADO
+  FALLECIDO
+
+  @@map("estado_habitante")
+}
+
+model Habitante {
+  id                 Int             @id @default(autoincrement())
+  nucleoId           Int             @map("nucleo_id")
+  nacionalidad       String          @db.Char(1)
+  cedula             String?         @db.VarChar(12)
+  nombres            String          @db.VarChar(80)
+  apellidos          String          @db.VarChar(80)
+  fechaNacimiento    DateTime        @map("fecha_nacimiento") @db.Date
+  sexo               Sexo
+  parentesco         Parentesco
+  telefono           String?         @db.VarChar(20)
+  correo             String?         @db.VarChar(120)
+  nivelEducativo     NivelEducativo? @map("nivel_educativo")
+  estudiaActualmente Boolean         @default(false) @map("estudia_actualmente")
+  ocupacion          String?         @db.VarChar(80)
+  discapacidad       String?         @db.VarChar(80)
+  enfermedadCronica  String?         @map("enfermedad_cronica") @db.VarChar(80)
+  estado             EstadoHabitante @default(ACTIVO)
+  creadoEn           DateTime        @default(now()) @map("creado_en")
+  actualizadoEn      DateTime        @updatedAt @map("actualizado_en")
+  creadoPorId        Int             @map("creado_por")
+  nucleo             NucleoFamiliar  @relation(fields: [nucleoId], references: [id])
+  creadoPor          Usuario         @relation(fields: [creadoPorId], references: [id])
+
+  @@unique([nacionalidad, cedula])
+  @@index([nucleoId])
+  @@map("habitante")
 }
 
 model Configuracion {

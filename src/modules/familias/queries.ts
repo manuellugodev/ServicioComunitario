@@ -7,7 +7,15 @@ export async function listarFamiliasDeVivienda(viviendaId: number) {
   return db.nucleoFamiliar.findMany({
     where: { viviendaId },
     orderBy: { id: "asc" },
-    select: { id: true, recibeClap: true },
+    select: {
+      id: true,
+      recibeClap: true,
+      habitantes: {
+        where: { parentesco: "JEFE", estado: "ACTIVO" },
+        select: { nombres: true, apellidos: true },
+      },
+      _count: { select: { habitantes: { where: { estado: "ACTIVO" } } } },
+    },
   });
 }
 

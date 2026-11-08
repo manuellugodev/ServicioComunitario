@@ -48,7 +48,7 @@ export async function crearFamilia(
   }
 
   revalidatePath(`/viviendas/${viviendaId}`);
-  redirect(`/familias/${id}`);
+  redirect(`/familias/${id}/miembros/nuevo`);
 }
 
 export async function editarFamilia(

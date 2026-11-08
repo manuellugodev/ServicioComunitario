@@ -27,14 +27,22 @@ export async function FamiliasDeVivienda({ idTexto }: { idTexto: Promise<string>
         <p className="text-muted-foreground">Esta vivienda no tiene familias registradas.</p>
       ) : (
         <ul>
-          {familias.map((familia, indice) => (
-            <li key={familia.id} className="flex flex-wrap justify-between gap-2 border-b py-2">
-              <Link href={`/familias/${familia.id}`} className="font-medium underline">
-                Familia {indice + 1}
-              </Link>
-              {familia.recibeClap && <span className="text-muted-foreground">Recibe CLAP</span>}
-            </li>
-          ))}
+          {familias.map((familia, indice) => {
+            const [jefe] = familia.habitantes;
+            const personas = familia._count.habitantes;
+
+            return (
+              <li key={familia.id} className="flex flex-wrap justify-between gap-2 border-b py-2">
+                <Link href={`/familias/${familia.id}`} className="font-medium underline">
+                  {jefe ? `Familia de ${jefe.nombres} ${jefe.apellidos}` : `Familia ${indice + 1} (sin jefe)`}
+                </Link>
+                <span className="text-muted-foreground">
+                  {personas} {personas === 1 ? "persona" : "personas"}
+                  {familia.recibeClap && " · Recibe CLAP"}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { listarSectores } from "@/modules/configuracion/queries";
 import { listarViviendas } from "@/modules/viviendas/queries";
 import { CampoSelect } from "@/shared/components/campo";
+import { Paginacion } from "@/shared/components/paginacion";
 import { Button } from "@/shared/components/ui/button";
 import {
   Table,
@@ -26,14 +27,6 @@ export async function ListadoViviendas({ parametros }: Props) {
     listarViviendas({ sectorId, pagina: aIdPositivo(paginaTexto) ?? 1 }),
     listarSectores(),
   ]);
-
-  const enlacePagina = (numero: number) => {
-    const consulta = new URLSearchParams({ pagina: String(numero) });
-    if (sectorId) {
-      consulta.set("sector", String(sectorId));
-    }
-    return `/viviendas?${consulta}`;
-  };
 
   return (
     <div className="grid gap-4">
@@ -83,21 +76,13 @@ export async function ListadoViviendas({ parametros }: Props) {
         </Table>
       )}
 
-      <div className="flex flex-wrap items-center gap-3">
-        <p className="text-sm text-muted-foreground">
-          {total} {total === 1 ? "vivienda" : "viviendas"} · Página {pagina} de {paginas}
-        </p>
-        {pagina > 1 && (
-          <Link href={enlacePagina(pagina - 1)} className="text-sm underline">
-            Anterior
-          </Link>
-        )}
-        {pagina < paginas && (
-          <Link href={enlacePagina(pagina + 1)} className="text-sm underline">
-            Siguiente
-          </Link>
-        )}
-      </div>
+      <Paginacion
+        ruta="/viviendas"
+        consulta={{ sector: sectorId ? String(sectorId) : undefined }}
+        texto={`${total} ${total === 1 ? "vivienda" : "viviendas"}`}
+        pagina={pagina}
+        paginas={paginas}
+      />
     </div>
   );
 }
