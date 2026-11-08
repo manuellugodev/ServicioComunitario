@@ -31,7 +31,7 @@ const ENLACES: Enlace[] = [
   { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban, listo: false },
   { href: "/reportes", etiqueta: "Reportes", icono: FileText, listo: false },
   { href: "/usuarios", etiqueta: "Usuarios", icono: UserCog, listo: true },
-  { href: "/configuracion", etiqueta: "Configuración", icono: Settings, listo: false },
+  { href: "/configuracion", etiqueta: "Configuración", icono: Settings, listo: true },
 ];
 
 const CLASES_ENLACE = "flex items-center gap-3 rounded-md px-3 py-2.5 text-base";

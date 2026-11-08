@@ -50,7 +50,21 @@ model Bitacora {
 
 model TipoVivienda {
   id     Int    @id @default(autoincrement())
-  nombre String @unique @db.VarChar(40)
+  nombre String @unique @db.VarChar(80)
 
   @@map("tipo_vivienda")
+}
+
+model Sector {
+  id     Int    @id @default(autoincrement())
+  nombre String @unique @db.VarChar(80)
+
+  @@map("sector")
+}
+
+model Configuracion {
+  id            Int    @id @default(1)
+  nombreConsejo String @map("nombre_consejo") @db.VarChar(120)
+
+  @@map("configuracion")
 }

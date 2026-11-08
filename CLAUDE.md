@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base) and 1 (M1 Seguridad) are built. Next is Stage 2 (M8 catalogs). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad) and 2 (M8 catalogs and council name) are built. Next is Stage 3 (M2 Viviendas). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 
@@ -56,7 +56,7 @@ Environment variables are listed in `.env.example`. `COOKIE_SEGURA="false"` is r
 
 ### Authentication
 
-`src/proxy.ts` only checks that the cookie exists, to redirect quickly. The real check is `requerirSesion()` in `src/shared/lib/sesion.ts`, which also confirms in the database that the user is active. Every query and every Server Action must call it, because Server Actions are reachable by direct POST.
+`src/proxy.ts` only checks that the cookie exists, to redirect quickly. The real check is `requerirSesion()` in `src/shared/lib/sesion.ts`, which also confirms in the database that the user is active. Every query and every Server Action must call it, because Server Actions are reachable by direct POST. The only exception is `obtenerNombreConsejo`, since the login screen shows the council name.
 
 Role restrictions are deliberately deferred to Stage 9: `rol` is stored but nothing enforces it yet, so any logged-in user can do everything. They must be in place before real data is loaded or the system is deployed. Add them by changing the `requerirSesion()` calls. Still undecided: whether the Consulta role sees per-person health and disability data or only totals.
 
@@ -69,7 +69,7 @@ Form actions have the signature `(estado: EstadoFormulario, formData: FormData)`
 3. `db.$transaction` containing the write and `registrarBitacora(tx, ...)`
 4. `revalidatePath`, then `redirect` outside any `try`, because `redirect` throws
 
-Handle unique violations by catching `Prisma.PrismaClientKnownRequestError` with code `P2002`. Do slow work such as bcrypt hashing outside the transaction.
+`src/shared/lib/acciones.ts` has the shared helpers: `aErrores`, `sinContrasenas`, and `esDuplicado`, `estaEnUso` and `noExiste` for Prisma errors. Use `BotonConfirmar` for actions that need confirmation. Do slow work such as bcrypt hashing outside the transaction. Validate string arguments bound to an action, such as `catalogo`, since clients can tamper with them.
 
 ### Cache Components
 
@@ -87,4 +87,5 @@ Handle unique violations by catching `Prisma.PrismaClientKnownRequestError` with
 - Running `prisma init` adds agent skill folders to the repo; it isn't needed again.
 - Database naming: PascalCase Prisma models and camelCase fields, mapped with `@@map` and `@map` to the snake_case names in the data dictionary.
 - shadcn/ui uses the `base-nova` style on Base UI, not Radix: compose with the `render` prop rather than `asChild`, and pass `nativeButton={false}` when a `Button` renders a link. `components.json` aliases point to `@/shared/...`, so `npx shadcn@latest add <componente>` installs there.
-- When a module is finished, set `listo: true` for it in `src/shared/components/navegacion.tsx`. Stage 2 replaces the `NOMBRE_CONSEJO` constant with the `configuracion` table.
+- When a module is finished, set `listo: true` for it in `src/shared/components/navegacion.tsx`.
+- Don't use `'use cache'` for database reads: it would run the query during `next build`, when a Docker build has no database. Read after `await connection()` or `requerirSesion()`, inside `<Suspense>`.

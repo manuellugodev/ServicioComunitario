@@ -13,11 +13,11 @@ import {
 import { Navegacion } from "@/shared/components/navegacion";
 
 type Props = {
-  nombreConsejo: string;
+  titulo: ReactNode;
   children: ReactNode;
 };
 
-export function MenuMovil({ nombreConsejo, children }: Props) {
+export function MenuMovil({ titulo, children }: Props) {
   const [abierto, setAbierto] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ export function MenuMovil({ nombreConsejo, children }: Props) {
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>{nombreConsejo}</SheetTitle>
+          <SheetTitle>{titulo}</SheetTitle>
         </SheetHeader>
         <Navegacion alNavegar={() => setAbierto(false)} />
         <div className="mt-auto border-t" onClick={() => setAbierto(false)}>

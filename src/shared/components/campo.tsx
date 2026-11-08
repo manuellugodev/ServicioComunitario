@@ -9,12 +9,12 @@ type CampoProps = ComponentProps<typeof Input> & {
   errores?: string[];
 };
 
-export function Campo({ name, etiqueta, errores, ...props }: CampoProps) {
+export function Campo({ name, id = name, etiqueta, errores, ...props }: CampoProps) {
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={name}>{etiqueta}</Label>
+      <Label htmlFor={id}>{etiqueta}</Label>
       <Input
-        id={name}
+        id={id}
         name={name}
         className="h-10 text-base"
         aria-invalid={errores ? true : undefined}

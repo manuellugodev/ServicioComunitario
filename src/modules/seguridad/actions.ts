@@ -1,10 +1,8 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { Prisma } from "@/generated/prisma/client";
 import {
   esquemaCambiarContrasena,
   esquemaCrearUsuario,
@@ -12,6 +10,7 @@ import {
   esquemaInicioSesion,
   esquemaRestablecerContrasena,
 } from "@/modules/seguridad/schemas";
+import { aErrores, esDuplicado, sinContrasenas } from "@/shared/lib/acciones";
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
@@ -26,24 +25,6 @@ const HASH_FICTICIO = bcrypt.hashSync("usuario-inexistente", COSTO_BCRYPT);
 const ERROR_DUPLICADO = "Ya existe un usuario con esa cédula o ese nombre de usuario.";
 const ERROR_NO_ENCONTRADO = "El usuario ya no existe.";
 const ERROR_ULTIMO_ADMIN = "Debe quedar al menos un administrador activo.";
-
-function aErrores(error: z.ZodError): Record<string, string[] | undefined> {
-  return z.flattenError(error).fieldErrors;
-}
-
-function esDuplicado(error: unknown) {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
-}
-
-function sinContrasenas(formData: FormData) {
-  const valores: Record<string, string> = {};
-  for (const [clave, valor] of formData) {
-    if (typeof valor === "string" && !clave.startsWith("$") && clave !== "contrasena") {
-      valores[clave] = valor;
-    }
-  }
-  return valores;
-}
 
 async function esUltimoAdmin(id: number) {
   const otros = await db.usuario.count({
