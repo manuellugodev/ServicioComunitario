@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -12,7 +12,12 @@ import {
 } from "@/shared/components/ui/sheet";
 import { Navegacion } from "@/shared/components/navegacion";
 
-export function MenuMovil({ nombreConsejo }: { nombreConsejo: string }) {
+type Props = {
+  nombreConsejo: string;
+  children: ReactNode;
+};
+
+export function MenuMovil({ nombreConsejo, children }: Props) {
   const [abierto, setAbierto] = useState(false);
 
   return (
@@ -25,6 +30,9 @@ export function MenuMovil({ nombreConsejo }: { nombreConsejo: string }) {
           <SheetTitle>{nombreConsejo}</SheetTitle>
         </SheetHeader>
         <Navegacion alNavegar={() => setAbierto(false)} />
+        <div className="mt-auto border-t" onClick={() => setAbierto(false)}>
+          {children}
+        </div>
       </SheetContent>
     </Sheet>
   );

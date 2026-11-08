@@ -12,6 +12,42 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Rol {
+  ADMIN
+  VOCERO
+  CONSULTA
+
+  @@map("rol")
+}
+
+model Usuario {
+  id             Int        @id @default(autoincrement())
+  nombreCompleto String     @map("nombre_completo") @db.VarChar(120)
+  cedula         String     @unique @db.VarChar(12)
+  usuario        String     @unique @db.VarChar(40)
+  passwordHash   String     @map("password_hash") @db.VarChar(255)
+  rol            Rol
+  activo         Boolean    @default(true)
+  creadoEn       DateTime   @default(now()) @map("creado_en")
+  bitacora       Bitacora[]
+
+  @@map("usuario")
+}
+
+model Bitacora {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int      @map("usuario_id")
+  accion     String   @db.VarChar(20)
+  tabla      String   @db.VarChar(40)
+  registroId Int      @map("registro_id")
+  detalle    Json?
+  fecha      DateTime @default(now())
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+
+  @@index([usuarioId])
+  @@map("bitacora")
+}
+
 model TipoVivienda {
   id     Int    @id @default(autoincrement())
   nombre String @unique @db.VarChar(40)
