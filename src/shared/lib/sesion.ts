@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getIronSession, type SessionOptions } from "iron-session";
 import { COOKIE_SESION } from "@/shared/lib/cookie-sesion";
 import { db } from "@/shared/lib/db";
+import type { Rol } from "@/shared/lib/roles";
 
 type DatosSesion = { usuarioId?: number };
 
@@ -49,3 +50,14 @@ export const requerirSesion = cache(async () => {
 
   return usuario;
 });
+
+async function requerirRol(...roles: Rol[]) {
+  const usuario = await requerirSesion();
+  if (!roles.includes(usuario.rol)) {
+    redirect("/");
+  }
+  return usuario;
+}
+
+export const requerirAdmin = () => requerirRol("ADMIN");
+export const requerirEscritura = () => requerirRol("ADMIN", "VOCERO");

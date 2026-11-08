@@ -51,7 +51,7 @@ Solo los usuarios autorizados del consejo comunal acceden al sistema. Los vecino
 | Vocero | Voceros de las unidades del consejo comunal | Registrar y editar viviendas, familias, habitantes y talentos; crear proyectos y asignar vecinos; ver reportes |
 | Consulta | Contraloría social u otros miembros | Solo ver listados, estadísticas y exportar reportes; no puede modificar datos |
 
-**Reglas:** todo usuario tiene contraseña personal; ninguna acción de escritura se permite sin sesión; eliminar registros está reservado al Administrador (los voceros solo pueden marcar a un habitante como "inactivo" por mudanza o fallecimiento).
+**Reglas:** todo usuario tiene contraseña personal; ninguna acción de escritura se permite sin sesión; eliminar registros está reservado al Administrador (los voceros solo pueden marcar a un habitante como "inactivo" por mudanza o fallecimiento); el rol Consulta solo ve totales de los datos de salud y discapacidad, nunca los de una persona identificada.
 
 **Implementación por fases:** el inicio de sesión y el rol de cada usuario existen desde el principio. Las restricciones de lectura y escritura por rol se implementan en la semana del 23 al 29 de noviembre, antes de cargar datos reales y de desplegar el sistema; hasta entonces solo se usan datos de prueba.
 
@@ -270,4 +270,3 @@ Distribución de la actividad 10 del cronograma (64 horas, del 01-11-2026 al 29-
 - [ ] Campos de la planilla de censo actual que deben conservarse (según las muestras de la actividad 7).
 - [ ] Lista inicial de categorías y talentos a precargar.
 - [ ] Dónde se instalará el sistema (computadora del consejo comunal o servidor en internet) y quién será el administrador.
-- [ ] Si el rol Consulta verá los datos de salud y discapacidad de cada habitante o solo los totales (a definir antes de implementar las restricciones por rol).

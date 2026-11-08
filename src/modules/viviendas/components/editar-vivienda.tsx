@@ -4,8 +4,11 @@ import { editarVivienda } from "@/modules/viviendas/actions";
 import { FormularioVivienda } from "@/modules/viviendas/components/formulario-vivienda";
 import { obtenerVivienda } from "@/modules/viviendas/queries";
 import { aIdPositivo } from "@/shared/lib/acciones";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function EditarVivienda({ idTexto }: { idTexto: Promise<string> }) {
+  await requerirEscritura();
+
   const id = aIdPositivo(await idTexto);
   const vivienda = id ? await obtenerVivienda(id) : null;
   if (!id || !vivienda) {

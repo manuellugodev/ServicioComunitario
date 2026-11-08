@@ -11,13 +11,15 @@ import {
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
 import { Navegacion } from "@/shared/components/navegacion";
+import type { Rol } from "@/shared/lib/roles";
 
 type Props = {
   titulo: ReactNode;
+  rol: Rol;
   children: ReactNode;
 };
 
-export function MenuMovil({ titulo, children }: Props) {
+export function MenuMovil({ titulo, rol, children }: Props) {
   const [abierto, setAbierto] = useState(false);
 
   return (
@@ -29,7 +31,7 @@ export function MenuMovil({ titulo, children }: Props) {
         <SheetHeader>
           <SheetTitle>{titulo}</SheetTitle>
         </SheetHeader>
-        <Navegacion alNavegar={() => setAbierto(false)} />
+        <Navegacion rol={rol} alNavegar={() => setAbierto(false)} />
         <div className="mt-auto border-t" onClick={() => setAbierto(false)}>
           {children}
         </div>

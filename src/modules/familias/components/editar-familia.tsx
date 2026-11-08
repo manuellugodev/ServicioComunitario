@@ -3,8 +3,11 @@ import { editarFamilia } from "@/modules/familias/actions";
 import { FormularioFamilia } from "@/modules/familias/components/formulario-familia";
 import { obtenerFamilia } from "@/modules/familias/queries";
 import { aIdPositivo } from "@/shared/lib/acciones";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function EditarFamilia({ idTexto }: { idTexto: Promise<string> }) {
+  await requerirEscritura();
+
   const id = aIdPositivo(await idTexto);
   const familia = id ? await obtenerFamilia(id) : null;
   if (!id || !familia) {

@@ -5,8 +5,11 @@ import { obtenerProyecto } from "@/modules/proyectos/queries";
 import { listarUsuariosActivos } from "@/modules/seguridad/queries";
 import { aIdPositivo } from "@/shared/lib/acciones";
 import { aTextoFecha } from "@/shared/lib/fechas";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function EditarProyecto({ idTexto }: { idTexto: Promise<string> }) {
+  await requerirEscritura();
+
   const id = aIdPositivo(await idTexto);
   const proyecto = id ? await obtenerProyecto(id) : null;
   if (!id || !proyecto) {

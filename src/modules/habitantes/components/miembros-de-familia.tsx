@@ -4,6 +4,8 @@ import { ETIQUETAS_ESTADO, ETIQUETAS_PARENTESCO } from "@/modules/habitantes/sch
 import { Button } from "@/shared/components/ui/button";
 import { aIdPositivo } from "@/shared/lib/acciones";
 import { calcularEdad } from "@/shared/lib/fechas";
+import { puedeEscribir } from "@/shared/lib/roles";
+import { requerirSesion } from "@/shared/lib/sesion";
 
 export async function MiembrosDeFamilia({ idTexto }: { idTexto: Promise<string> }) {
   const nucleoId = aIdPositivo(await idTexto);
@@ -11,6 +13,7 @@ export async function MiembrosDeFamilia({ idTexto }: { idTexto: Promise<string> 
     return null;
   }
 
+  const { rol } = await requerirSesion();
   const miembros = await listarMiembros(nucleoId);
   const tieneJefe = miembros.some(
     ({ parentesco, estado }) => parentesco === "JEFE" && estado === "ACTIVO"
@@ -20,13 +23,15 @@ export async function MiembrosDeFamilia({ idTexto }: { idTexto: Promise<string> 
     <section className="grid max-w-2xl gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-heading text-lg font-semibold">Miembros</h2>
-        <Button
-          size="lg"
-          render={<Link href={`/familias/${nucleoId}/miembros/nuevo`} />}
-          nativeButton={false}
-        >
-          Agregar miembro
-        </Button>
+        {puedeEscribir(rol) && (
+          <Button
+            size="lg"
+            render={<Link href={`/familias/${nucleoId}/miembros/nuevo`} />}
+            nativeButton={false}
+          >
+            Agregar miembro
+          </Button>
+        )}
       </div>
       {!tieneJefe && (
         <p role="status" className="text-sm text-destructive">

@@ -89,8 +89,8 @@ export async function familiaTieneJefe(nucleoId: number) {
 }
 
 export async function obtenerHabitante(id: number) {
-  await requerirSesion();
-  return db.habitante.findUnique({
+  const { rol } = await requerirSesion();
+  const habitante = await db.habitante.findUnique({
     where: { id },
     include: {
       nucleo: {
@@ -101,4 +101,12 @@ export async function obtenerHabitante(id: number) {
       },
     },
   });
+  if (!habitante) {
+    return null;
+  }
+
+  // El rol Consulta solo ve totales de salud, así que estos datos ni salen del servidor.
+  return rol === "CONSULTA"
+    ? { ...habitante, discapacidad: null, enfermedadCronica: null, saludOculta: true }
+    : { ...habitante, saludOculta: false };
 }

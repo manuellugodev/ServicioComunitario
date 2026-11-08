@@ -16,7 +16,7 @@ import {
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirAdmin, requerirEscritura } from "@/shared/lib/sesion";
 
 const TABLA_CATALOGO = "talento";
 const TABLA_ASIGNACION = "habitante_talento";
@@ -27,7 +27,7 @@ export async function guardarTalentoCatalogo(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const datos = esquemaTalentoCatalogo.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -66,7 +66,7 @@ export async function guardarTalentoCatalogo(
 }
 
 export async function eliminarTalentoCatalogo(id: number): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   try {
     await db.$transaction(async (tx) => {
@@ -98,7 +98,7 @@ export async function asignarTalento(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaAsignacion.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -136,7 +136,7 @@ export async function editarAsignacion(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaDatosAsignacion.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -172,7 +172,7 @@ export async function quitarTalento(
   habitanteId: number,
   talentoId: number
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   try {
     await db.$transaction(async (tx) => {

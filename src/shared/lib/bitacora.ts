@@ -3,7 +3,7 @@ import type { Prisma } from "@/generated/prisma/client";
 
 type Entrada = {
   usuarioId: number;
-  accion: "CREAR" | "EDITAR" | "ELIMINAR";
+  accion: "CREAR" | "EDITAR" | "ELIMINAR" | "RESPALDO";
   tabla: string;
   registroId: number;
   detalle?: Prisma.InputJsonValue;

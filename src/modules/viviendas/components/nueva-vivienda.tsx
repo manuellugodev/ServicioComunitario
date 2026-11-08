@@ -2,8 +2,11 @@ import Link from "next/link";
 import { listarSectores, listarTiposVivienda } from "@/modules/configuracion/queries";
 import { crearVivienda } from "@/modules/viviendas/actions";
 import { FormularioVivienda } from "@/modules/viviendas/components/formulario-vivienda";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function NuevaVivienda() {
+  await requerirEscritura();
+
   const [sectores, tipos] = await Promise.all([listarSectores(), listarTiposVivienda()]);
 
   if (sectores.length === 0) {

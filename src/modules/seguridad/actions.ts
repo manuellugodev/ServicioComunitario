@@ -14,7 +14,8 @@ import { aErrores, esDuplicado, sinContrasenas } from "@/shared/lib/acciones";
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { abrirSesion, destruirSesion, requerirSesion } from "@/shared/lib/sesion";
+import { estaBloqueado, limpiarFallos, registrarFallo } from "@/modules/seguridad/intentos";
+import { abrirSesion, destruirSesion, requerirAdmin, requerirSesion } from "@/shared/lib/sesion";
 
 const COSTO_BCRYPT = 12;
 const TABLA = "usuario";
@@ -42,6 +43,13 @@ export async function iniciarSesion(
     return { errores: aErrores(datos.error), valores: sinContrasenas(formData) };
   }
 
+  if (estaBloqueado(datos.data.usuario)) {
+    return {
+      error: "Demasiados intentos fallidos. Espera 15 minutos e inténtalo de nuevo.",
+      valores: sinContrasenas(formData),
+    };
+  }
+
   const usuario = await db.usuario.findUnique({ where: { usuario: datos.data.usuario } });
   const correcta = await bcrypt.compare(
     datos.data.contrasena,
@@ -49,9 +57,11 @@ export async function iniciarSesion(
   );
 
   if (!usuario || !usuario.activo || !correcta) {
+    registrarFallo(datos.data.usuario);
     return { error: "Usuario o contraseña incorrectos.", valores: sinContrasenas(formData) };
   }
 
+  limpiarFallos(datos.data.usuario);
   await abrirSesion(usuario.id);
   redirect("/");
 }
@@ -65,7 +75,7 @@ export async function crearUsuario(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const datos = esquemaCrearUsuario.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -102,7 +112,7 @@ export async function editarUsuario(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const datos = esquemaEditarUsuario.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -153,7 +163,7 @@ export async function cambiarEstadoUsuario(
   id: number,
   activo: boolean
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const actual = await db.usuario.findUnique({ where: { id } });
   if (!actual) {
@@ -198,7 +208,7 @@ export async function restablecerContrasena(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const datos = esquemaRestablecerContrasena.safeParse(Object.fromEntries(formData));
   if (!datos.success) {

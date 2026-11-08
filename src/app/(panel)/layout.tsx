@@ -1,8 +1,10 @@
 import { Suspense } from "react";
 import { NombreConsejo } from "@/modules/configuracion/components/nombre-consejo";
+import {
+  MenuMovilSegunRol,
+  NavegacionSegunRol,
+} from "@/modules/seguridad/components/navegacion-segun-rol";
 import { UsuarioActual } from "@/modules/seguridad/components/usuario-actual";
-import { MenuMovil } from "@/shared/components/menu-movil";
-import { Navegacion } from "@/shared/components/navegacion";
 
 export default function PanelLayout({ children }: LayoutProps<"/">) {
   return (
@@ -12,7 +14,7 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
           <NombreConsejo />
         </p>
         <Suspense>
-          <Navegacion />
+          <NavegacionSegunRol />
         </Suspense>
         <div className="mt-auto border-t">
           <Suspense>
@@ -22,11 +24,13 @@ export default function PanelLayout({ children }: LayoutProps<"/">) {
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center gap-2 border-b p-2 md:hidden">
-          <MenuMovil titulo={<NombreConsejo />}>
-            <Suspense>
-              <UsuarioActual />
-            </Suspense>
-          </MenuMovil>
+          <Suspense>
+            <MenuMovilSegunRol titulo={<NombreConsejo />}>
+              <Suspense>
+                <UsuarioActual />
+              </Suspense>
+            </MenuMovilSegunRol>
+          </Suspense>
           <span className="truncate font-heading font-semibold">
             <NombreConsejo />
           </span>

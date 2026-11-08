@@ -4,8 +4,11 @@ import { FormularioHabitante } from "@/modules/habitantes/components/formulario-
 import { obtenerHabitante } from "@/modules/habitantes/queries";
 import { aIdPositivo } from "@/shared/lib/acciones";
 import { aTextoFecha } from "@/shared/lib/fechas";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function EditarHabitante({ idTexto }: { idTexto: Promise<string> }) {
+  await requerirEscritura();
+
   const id = aIdPositivo(await idTexto);
   const habitante = id ? await obtenerHabitante(id) : null;
   if (!id || !habitante) {

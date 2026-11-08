@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/shared/lib/db";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirAdmin, requerirSesion } from "@/shared/lib/sesion";
 
 const CAMPOS_PUBLICOS = {
   id: true,
@@ -12,7 +12,7 @@ const CAMPOS_PUBLICOS = {
 } as const;
 
 export async function listarUsuarios() {
-  await requerirSesion();
+  await requerirAdmin();
   return db.usuario.findMany({ select: CAMPOS_PUBLICOS, orderBy: { nombreCompleto: "asc" } });
 }
 
@@ -27,6 +27,6 @@ export async function listarUsuariosActivos(incluirId?: number) {
 }
 
 export async function obtenerUsuario(id: number) {
-  await requerirSesion();
+  await requerirAdmin();
   return db.usuario.findUnique({ where: { id }, select: CAMPOS_PUBLICOS });
 }

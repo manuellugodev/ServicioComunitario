@@ -4,8 +4,11 @@ import { crearHabitante } from "@/modules/habitantes/actions";
 import { FormularioHabitante } from "@/modules/habitantes/components/formulario-habitante";
 import { familiaTieneJefe } from "@/modules/habitantes/queries";
 import { aIdPositivo } from "@/shared/lib/acciones";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 export async function NuevoHabitante({ idTexto }: { idTexto: Promise<string> }) {
+  await requerirEscritura();
+
   const nucleoId = aIdPositivo(await idTexto);
   const familia = nucleoId ? await obtenerFamilia(nucleoId) : null;
   if (!nucleoId || !familia) {

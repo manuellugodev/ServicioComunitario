@@ -13,6 +13,8 @@ import { Dato } from "@/shared/components/dato";
 import { Button } from "@/shared/components/ui/button";
 import { aIdPositivo } from "@/shared/lib/acciones";
 import { aTextoFecha, calcularEdad } from "@/shared/lib/fechas";
+import { puedeEscribir } from "@/shared/lib/roles";
+import { requerirSesion } from "@/shared/lib/sesion";
 
 const SIN_INDICAR = "Sin indicar";
 
@@ -23,6 +25,8 @@ export async function FichaHabitante({ idTexto }: { idTexto: Promise<string> }) 
     notFound();
   }
 
+  const { rol } = await requerirSesion();
+  const escribe = puedeEscribir(rol);
   const nombre = `${habitante.nombres} ${habitante.apellidos}`;
 
   return (
@@ -38,14 +42,16 @@ export async function FichaHabitante({ idTexto }: { idTexto: Promise<string> }) 
             Vivienda {habitante.nucleo.vivienda.codigo}
           </Link>
         </div>
-        <Button
-          variant="outline"
-          size="lg"
-          render={<Link href={`/habitantes/${habitante.id}/editar`} />}
-          nativeButton={false}
-        >
-          Editar
-        </Button>
+        {escribe && (
+          <Button
+            variant="outline"
+            size="lg"
+            render={<Link href={`/habitantes/${habitante.id}/editar`} />}
+            nativeButton={false}
+          >
+            Editar
+          </Button>
+        )}
       </div>
       <dl className="grid max-w-2xl gap-4 sm:grid-cols-2">
         <Dato etiqueta="Cédula">{formatoCedula(habitante.nacionalidad, habitante.cedula)}</Dato>
@@ -62,10 +68,16 @@ export async function FichaHabitante({ idTexto }: { idTexto: Promise<string> }) 
         </Dato>
         <Dato etiqueta="Estudia actualmente">{habitante.estudiaActualmente ? "Sí" : "No"}</Dato>
         <Dato etiqueta="Ocupación">{habitante.ocupacion ?? SIN_INDICAR}</Dato>
-        <Dato etiqueta="Discapacidad">{habitante.discapacidad ?? "No registra"}</Dato>
-        <Dato etiqueta="Enfermedad crónica">{habitante.enfermedadCronica ?? "No registra"}</Dato>
+        {!habitante.saludOculta && (
+          <>
+            <Dato etiqueta="Discapacidad">{habitante.discapacidad ?? "No registra"}</Dato>
+            <Dato etiqueta="Enfermedad crónica">{habitante.enfermedadCronica ?? "No registra"}</Dato>
+          </>
+        )}
       </dl>
-      <BotonesEstadoHabitante id={habitante.id} nombre={nombre} estado={habitante.estado} />
+      {escribe && (
+        <BotonesEstadoHabitante id={habitante.id} nombre={nombre} estado={habitante.estado} />
+      )}
     </div>
   );
 }

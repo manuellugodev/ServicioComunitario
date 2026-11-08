@@ -114,13 +114,28 @@ function FormularioAgregar({ proyectoId, opciones }: { proyectoId: number; opcio
   );
 }
 
+function FilaSoloLectura({ requerimiento }: { requerimiento: Requerimiento }) {
+  const { nombre, categoria, asignados, cantidadRequerida } = requerimiento;
+
+  return (
+    <li className="border-b py-3">
+      <span className="font-medium">{nombre}</span>{" "}
+      <span className="text-muted-foreground">· {categoria}</span>
+      <span className="block text-sm text-muted-foreground">
+        {asignados} de {cantidadRequerida} asignados
+      </span>
+    </li>
+  );
+}
+
 type Props = {
   proyectoId: number;
   requerimientos: Requerimiento[];
   opciones: Opcion[];
+  puedeEditar: boolean;
 };
 
-export function TalentosRequeridos({ proyectoId, requerimientos, opciones }: Props) {
+export function TalentosRequeridos({ proyectoId, requerimientos, opciones, puedeEditar }: Props) {
   return (
     <section className="grid max-w-2xl gap-4">
       <h2 className="font-heading text-lg font-semibold">Talentos requeridos</h2>
@@ -128,26 +143,31 @@ export function TalentosRequeridos({ proyectoId, requerimientos, opciones }: Pro
         <p className="text-muted-foreground">Este proyecto todavía no indica talentos.</p>
       ) : (
         <ul>
-          {requerimientos.map((requerimiento) => (
-            <FilaRequerimiento
-              key={requerimiento.talentoId}
-              proyectoId={proyectoId}
-              requerimiento={requerimiento}
-            />
-          ))}
+          {requerimientos.map((requerimiento) =>
+            puedeEditar ? (
+              <FilaRequerimiento
+                key={requerimiento.talentoId}
+                proyectoId={proyectoId}
+                requerimiento={requerimiento}
+              />
+            ) : (
+              <FilaSoloLectura key={requerimiento.talentoId} requerimiento={requerimiento} />
+            )
+          )}
         </ul>
       )}
-      {opciones.length > 0 ? (
-        <FormularioAgregar proyectoId={proyectoId} opciones={opciones} />
-      ) : (
-        <p className="text-muted-foreground">
-          No hay más talentos para agregar. Puedes registrarlos en{" "}
-          <Link href="/configuracion" className="underline">
-            Configuración
-          </Link>
-          .
-        </p>
-      )}
+      {puedeEditar &&
+        (opciones.length > 0 ? (
+          <FormularioAgregar proyectoId={proyectoId} opciones={opciones} />
+        ) : (
+          <p className="text-muted-foreground">
+            No hay más talentos para agregar. Puedes registrarlos en{" "}
+            <Link href="/configuracion" className="underline">
+              Configuración
+            </Link>
+            .
+          </p>
+        ))}
     </section>
   );
 }

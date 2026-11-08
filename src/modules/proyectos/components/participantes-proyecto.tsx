@@ -18,9 +18,11 @@ export type Participante = {
 export function ParticipantesProyecto({
   proyectoId,
   participantes,
+  puedeEditar,
 }: {
   proyectoId: number;
   participantes: Participante[];
+  puedeEditar: boolean;
 }) {
   return (
     <section className="grid max-w-2xl gap-4">
@@ -45,16 +47,18 @@ export function ParticipantesProyecto({
                   {!participante.activo && " · Ya no está activo(a)"}
                 </p>
               </div>
-              <BotonConfirmar
-                etiqueta="Quitar"
-                titulo={`¿Quitar a ${participante.nombre} del proyecto?`}
-                descripcion="Dejará de estar asignado con este talento."
-                confirmar="Quitar"
-                tamano="sm"
-                accion={() =>
-                  quitarParticipante(proyectoId, participante.habitanteId, participante.talentoId)
-                }
-              />
+              {puedeEditar && (
+                <BotonConfirmar
+                  etiqueta="Quitar"
+                  titulo={`¿Quitar a ${participante.nombre} del proyecto?`}
+                  descripcion="Dejará de estar asignado con este talento."
+                  confirmar="Quitar"
+                  tamano="sm"
+                  accion={() =>
+                    quitarParticipante(proyectoId, participante.habitanteId, participante.talentoId)
+                  }
+                />
+              )}
             </li>
           ))}
         </ul>

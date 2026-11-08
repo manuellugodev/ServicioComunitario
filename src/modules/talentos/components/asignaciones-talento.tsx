@@ -158,7 +158,14 @@ function FormularioEditar({ habitanteId, asignacion, alCerrar }: PropsEditar) {
   );
 }
 
-function FilaAsignacion({ habitanteId, asignacion }: { habitanteId: number; asignacion: Asignacion }) {
+type PropsFila = {
+  habitanteId: number;
+  asignacion: Asignacion;
+  puedeEditar: boolean;
+  puedeQuitar: boolean;
+};
+
+function FilaAsignacion({ habitanteId, asignacion, puedeEditar, puedeQuitar }: PropsFila) {
   const [editando, setEditando] = useState(false);
 
   if (editando) {
@@ -192,17 +199,21 @@ function FilaAsignacion({ habitanteId, asignacion }: { habitanteId: number; asig
         <p className="text-sm text-muted-foreground">{detalles.join(" · ")}</p>
       </div>
       <div className="flex items-start gap-2">
-        <Button variant="outline" size="sm" onClick={() => setEditando(true)}>
-          Editar
-        </Button>
-        <BotonConfirmar
-          etiqueta="Quitar"
-          titulo={`¿Quitar "${asignacion.talento.nombre}"?`}
-          descripcion="Se quitará este talento de la persona."
-          confirmar="Quitar"
-          tamano="sm"
-          accion={() => quitarTalento(habitanteId, asignacion.talentoId)}
-        />
+        {puedeEditar && (
+          <Button variant="outline" size="sm" onClick={() => setEditando(true)}>
+            Editar
+          </Button>
+        )}
+        {puedeQuitar && (
+          <BotonConfirmar
+            etiqueta="Quitar"
+            titulo={`¿Quitar "${asignacion.talento.nombre}"?`}
+            descripcion="Se quitará este talento de la persona."
+            confirmar="Quitar"
+            tamano="sm"
+            accion={() => quitarTalento(habitanteId, asignacion.talentoId)}
+          />
+        )}
       </div>
     </li>
   );
@@ -213,9 +224,18 @@ type Props = {
   asignaciones: Asignacion[];
   categorias: Categoria[];
   talentos: Talento[];
+  puedeEditar: boolean;
+  puedeQuitar: boolean;
 };
 
-export function AsignacionesTalento({ habitanteId, asignaciones, categorias, talentos }: Props) {
+export function AsignacionesTalento({
+  habitanteId,
+  asignaciones,
+  categorias,
+  talentos,
+  puedeEditar,
+  puedeQuitar,
+}: Props) {
   const asignados = new Set(asignaciones.map(({ talentoId }) => talentoId));
   const disponibles = talentos.filter(({ id }) => !asignados.has(id));
 
@@ -231,25 +251,28 @@ export function AsignacionesTalento({ habitanteId, asignaciones, categorias, tal
               key={asignacion.talentoId}
               habitanteId={habitanteId}
               asignacion={asignacion}
+              puedeEditar={puedeEditar}
+              puedeQuitar={puedeQuitar}
             />
           ))}
         </ul>
       )}
-      {talentos.length === 0 ? (
-        <p className="text-muted-foreground">
-          Primero registra talentos en{" "}
-          <Link href="/configuracion" className="underline">
-            Configuración
-          </Link>
-          .
-        </p>
-      ) : (
-        <FormularioAgregar
-          habitanteId={habitanteId}
-          categorias={categorias}
-          talentos={disponibles}
-        />
-      )}
+      {puedeEditar &&
+        (talentos.length === 0 ? (
+          <p className="text-muted-foreground">
+            Primero registra talentos en{" "}
+            <Link href="/configuracion" className="underline">
+              Configuración
+            </Link>
+            .
+          </p>
+        ) : (
+          <FormularioAgregar
+            habitanteId={habitanteId}
+            categorias={categorias}
+            talentos={disponibles}
+          />
+        ))}
     </section>
   );
 }

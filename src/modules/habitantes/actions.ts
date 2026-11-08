@@ -15,7 +15,7 @@ import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import { aTextoFecha } from "@/shared/lib/fechas";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 const TABLA = "habitante";
 const ERROR_CEDULA = "Ya hay una persona registrada con esa cédula.";
@@ -78,7 +78,7 @@ export async function crearHabitante(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaHabitante.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -122,7 +122,7 @@ export async function editarHabitante(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaHabitante.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -186,7 +186,7 @@ export async function cambiarEstadoHabitante(
   id: number,
   estado: z.output<typeof esquemaEstado>
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
   const nuevoEstado = esquemaEstado.parse(estado);
 
   try {

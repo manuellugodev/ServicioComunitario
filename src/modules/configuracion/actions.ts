@@ -19,7 +19,7 @@ import {
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirAdmin } from "@/shared/lib/sesion";
 
 const RUTA = "/configuracion";
 const ERROR_DUPLICADO = "Ya existe un registro con ese nombre.";
@@ -58,7 +58,7 @@ export async function guardarElemento(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
   const operaciones = OPERACIONES[esquemaCatalogo.parse(catalogo)];
 
   const datos = esquemaElementoCatalogo.safeParse(Object.fromEntries(formData));
@@ -98,7 +98,7 @@ export async function eliminarElemento(
   catalogo: Catalogo,
   id: number
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
   const operaciones = OPERACIONES[esquemaCatalogo.parse(catalogo)];
 
   try {
@@ -130,7 +130,7 @@ export async function actualizarNombreConsejo(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirAdmin();
 
   const datos = esquemaNombreConsejo.safeParse(Object.fromEntries(formData));
   if (!datos.success) {

@@ -107,6 +107,25 @@ async function discapacidad({ sectorId }: Filtros): Promise<FilasPorTipo> {
   };
 }
 
+// Para el rol Consulta: solo totales por sector, sin identificar a nadie.
+async function discapacidadTotales({ sectorId }: Filtros): Promise<FilasPorTipo> {
+  const habitantes = await db.habitante.findMany({
+    where: { ...condicionBase(sectorId), discapacidad: { not: null } },
+    select: { nucleo: { select: { vivienda: { select: { sector: { select: { nombre: true } } } } } } },
+  });
+
+  const porSector = new Map<string, number>();
+  for (const { nucleo } of habitantes) {
+    const sector = nucleo.vivienda.sector.nombre;
+    porSector.set(sector, (porSector.get(sector) ?? 0) + 1);
+  }
+
+  return {
+    columnas: ["Sector", "Personas con discapacidad"],
+    filas: [...porSector].sort(([a], [b]) => a.localeCompare(b, "es")),
+  };
+}
+
 async function edadEscolar({ sectorId, etapa }: Filtros): Promise<FilasPorTipo> {
   const minima = etapa?.minima ?? ETAPAS[0].minima;
   const maxima = etapa?.maxima ?? ETAPAS[ETAPAS.length - 1].maxima;
@@ -196,12 +215,13 @@ async function describirFiltros({ sectorId, categoriaId, etapa, tipo }: Filtros)
 }
 
 export async function generarReporte(filtros: Filtros): Promise<Reporte> {
-  await requerirSesion();
+  const { rol } = await requerirSesion();
+  const generador =
+    filtros.tipo === "discapacidad" && rol === "CONSULTA"
+      ? discapacidadTotales
+      : GENERADORES[filtros.tipo];
 
-  const [datos, descripcion] = await Promise.all([
-    GENERADORES[filtros.tipo](filtros),
-    describirFiltros(filtros),
-  ]);
+  const [datos, descripcion] = await Promise.all([generador(filtros), describirFiltros(filtros)]);
 
   return {
     tipo: filtros.tipo,

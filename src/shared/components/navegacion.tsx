@@ -14,65 +14,57 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "cn";
+import { esAdmin, type Rol } from "@/shared/lib/roles";
 
 type Enlace = {
   href: string;
   etiqueta: string;
   icono: LucideIcon;
-  // Se activa cuando el módulo correspondiente esté construido.
-  listo: boolean;
+  soloAdmin?: boolean;
 };
 
 const ENLACES: Enlace[] = [
-  { href: "/", etiqueta: "Panel principal", icono: LayoutDashboard, listo: true },
-  { href: "/viviendas", etiqueta: "Viviendas", icono: House, listo: true },
-  { href: "/habitantes", etiqueta: "Habitantes", icono: Users, listo: true },
-  { href: "/talentos", etiqueta: "Talentos", icono: Wrench, listo: true },
-  { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban, listo: true },
-  { href: "/reportes", etiqueta: "Reportes", icono: FileText, listo: true },
-  { href: "/usuarios", etiqueta: "Usuarios", icono: UserCog, listo: true },
-  { href: "/configuracion", etiqueta: "Configuración", icono: Settings, listo: true },
+  { href: "/", etiqueta: "Panel principal", icono: LayoutDashboard },
+  { href: "/viviendas", etiqueta: "Viviendas", icono: House },
+  { href: "/habitantes", etiqueta: "Habitantes", icono: Users },
+  { href: "/talentos", etiqueta: "Talentos", icono: Wrench },
+  { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban },
+  { href: "/reportes", etiqueta: "Reportes", icono: FileText },
+  { href: "/usuarios", etiqueta: "Usuarios", icono: UserCog, soloAdmin: true },
+  { href: "/configuracion", etiqueta: "Configuración", icono: Settings, soloAdmin: true },
 ];
 
-const CLASES_ENLACE = "flex items-center gap-3 rounded-md px-3 py-2.5 text-base";
+type Props = {
+  rol: Rol;
+  alNavegar?: () => void;
+};
 
-export function Navegacion({ alNavegar }: { alNavegar?: () => void }) {
+export function Navegacion({ rol, alNavegar }: Props) {
   const ruta = usePathname();
 
   return (
     <nav className="flex flex-col gap-1 p-3">
-      {ENLACES.map(({ href, etiqueta, icono: Icono, listo }) => {
-        if (!listo) {
+      {ENLACES.filter(({ soloAdmin }) => !soloAdmin || esAdmin(rol)).map(
+        ({ href, etiqueta, icono: Icono }) => {
+          const activo = href === "/" ? ruta === "/" : ruta.startsWith(href);
+
           return (
-            <span
+            <Link
               key={href}
-              aria-disabled="true"
-              className={cn(CLASES_ENLACE, "text-muted-foreground/60")}
+              href={href}
+              onClick={alNavegar}
+              aria-current={activo ? "page" : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2.5 text-base",
+                activo ? "bg-accent font-medium text-accent-foreground" : "hover:bg-accent/60"
+              )}
             >
               <Icono className="size-5" />
               {etiqueta}
-            </span>
+            </Link>
           );
         }
-
-        const activo = href === "/" ? ruta === "/" : ruta.startsWith(href);
-
-        return (
-          <Link
-            key={href}
-            href={href}
-            onClick={alNavegar}
-            aria-current={activo ? "page" : undefined}
-            className={cn(
-              CLASES_ENLACE,
-              activo ? "bg-accent font-medium text-accent-foreground" : "hover:bg-accent/60"
-            )}
-          >
-            <Icono className="size-5" />
-            {etiqueta}
-          </Link>
-        );
-      })}
+      )}
     </nav>
   );
 }

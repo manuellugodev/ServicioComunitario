@@ -7,7 +7,7 @@ import { aErrores, noExiste, sinContrasenas, violaReferencia } from "@/shared/li
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 const TABLA = "vivienda";
 const RUTA = "/viviendas";
@@ -36,7 +36,7 @@ export async function crearVivienda(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaVivienda.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -79,7 +79,7 @@ export async function editarVivienda(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaVivienda.safeParse(Object.fromEntries(formData));
   if (!datos.success) {

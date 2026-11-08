@@ -7,7 +7,7 @@ import { aErrores, noExiste, sinContrasenas, violaReferencia } from "@/shared/li
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 const TABLA = "nucleo_familiar";
 const ERROR_VIVIENDA = "La vivienda ya no existe.";
@@ -18,7 +18,7 @@ export async function crearFamilia(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaFamilia.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -56,7 +56,7 @@ export async function editarFamilia(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaFamilia.safeParse(Object.fromEntries(formData));
   if (!datos.success) {

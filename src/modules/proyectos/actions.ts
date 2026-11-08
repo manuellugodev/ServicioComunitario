@@ -20,7 +20,7 @@ import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
 import { aTextoFecha, hoyEnCaracas } from "@/shared/lib/fechas";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
-import { requerirSesion } from "@/shared/lib/sesion";
+import { requerirEscritura } from "@/shared/lib/sesion";
 
 const TABLA_PROYECTO = "proyecto";
 const TABLA_REQUERIMIENTO = "proyecto_talento";
@@ -46,7 +46,7 @@ export async function crearProyecto(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaProyecto.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -84,7 +84,7 @@ export async function editarProyecto(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaProyecto.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -121,7 +121,7 @@ export async function agregarRequerimiento(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaRequerimiento.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -159,7 +159,7 @@ export async function actualizarCantidad(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaCantidad.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -203,7 +203,7 @@ export async function quitarRequerimiento(
   proyectoId: number,
   talentoId: number
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   try {
     await db.$transaction(async (tx) => {
@@ -239,7 +239,7 @@ export async function asignarVecino(
   _estado: EstadoFormulario,
   formData: FormData
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   const datos = esquemaParticipante.safeParse(Object.fromEntries(formData));
   if (!datos.success) {
@@ -302,7 +302,7 @@ export async function quitarParticipante(
   habitanteId: number,
   talentoId: number
 ): Promise<EstadoFormulario> {
-  const sesion = await requerirSesion();
+  const sesion = await requerirEscritura();
 
   try {
     await db.$transaction(async (tx) => {
