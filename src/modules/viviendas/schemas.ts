@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { casilla, observaciones, seleccion } from "@/shared/lib/esquemas";
 
 export const TENENCIAS = ["PROPIA", "ALQUILADA", "PRESTADA", "INVADIDA", "OTRA"] as const;
 
@@ -18,13 +19,6 @@ export const SERVICIOS = [
   { campo: "internet", etiqueta: "Internet" },
 ] as const;
 
-const seleccion = (mensaje: string) => z.coerce.number(mensaje).int(mensaje).positive(mensaje);
-
-const servicio = z
-  .literal("on")
-  .optional()
-  .transform((valor) => valor === "on");
-
 export const esquemaVivienda = z.object({
   sectorId: seleccion("Selecciona un sector."),
   tipoViviendaId: seleccion("Selecciona el tipo de vivienda."),
@@ -37,14 +31,10 @@ export const esquemaVivienda = z.object({
     (valor) => (valor === "" ? null : valor),
     z.enum(TENENCIAS, "Selecciona una tenencia válida.").nullable()
   ),
-  agua: servicio,
-  electricidad: servicio,
-  gas: servicio,
-  aseo: servicio,
-  internet: servicio,
-  observaciones: z
-    .string()
-    .trim()
-    .max(2000, "Las observaciones no pueden tener más de 2000 caracteres.")
-    .transform((valor) => valor || null),
+  agua: casilla,
+  electricidad: casilla,
+  gas: casilla,
+  aseo: casilla,
+  internet: casilla,
+  observaciones,
 });

@@ -1,19 +1,10 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { obtenerVivienda } from "@/modules/viviendas/queries";
 import { ETIQUETAS_TENENCIA, SERVICIOS } from "@/modules/viviendas/schemas";
+import { Dato } from "@/shared/components/dato";
 import { Button } from "@/shared/components/ui/button";
 import { aIdPositivo } from "@/shared/lib/acciones";
-
-function Dato({ etiqueta, children }: { etiqueta: string; children: ReactNode }) {
-  return (
-    <div>
-      <dt className="text-sm text-muted-foreground">{etiqueta}</dt>
-      <dd className="whitespace-pre-line">{children}</dd>
-    </div>
-  );
-}
 
 export async function FichaVivienda({ idTexto }: { idTexto: Promise<string> }) {
   const id = aIdPositivo(await idTexto);

@@ -2,7 +2,13 @@
 
 import { useActionState } from "react";
 import { ETIQUETAS_TENENCIA, SERVICIOS, TENENCIAS } from "@/modules/viviendas/schemas";
-import { AvisoFormulario, Campo, CampoSelect, CampoTexto } from "@/shared/components/campo";
+import {
+  AvisoFormulario,
+  Campo,
+  CampoCasilla,
+  CampoSelect,
+  CampoTexto,
+} from "@/shared/components/campo";
 import { Button } from "@/shared/components/ui/button";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
 
@@ -74,15 +80,12 @@ export function FormularioVivienda({ accionServidor, sectores, tipos, vivienda }
       <fieldset className="grid gap-2">
         <legend className="mb-1 text-sm font-medium">Servicios básicos</legend>
         {SERVICIOS.map(({ campo, etiqueta }) => (
-          <label key={campo} className="flex items-center gap-3 text-base">
-            <input
-              type="checkbox"
-              name={campo}
-              className="size-5 accent-primary"
-              defaultChecked={estado.valores ? estado.valores[campo] === "on" : vivienda?.[campo]}
-            />
-            {etiqueta}
-          </label>
+          <CampoCasilla
+            key={campo}
+            name={campo}
+            etiqueta={etiqueta}
+            defaultChecked={estado.valores ? estado.valores[campo] === "on" : vivienda?.[campo]}
+          />
         ))}
       </fieldset>
       <CampoTexto

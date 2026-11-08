@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name) and 3 (M2 Viviendas) are built. Next is Stage 4 (M3 Familias). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name), 3 (M2 Viviendas) and 4 (M3 Familias) are built. Next is Stage 5 (M4 Habitantes), which also records the head of family (RF-05). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 
@@ -52,7 +52,7 @@ Environment variables are listed in `.env.example`. `COOKIE_SEGURA="false"` is r
 - `src/shared/` holds UI components and `lib/`. It must not import from modules.
 - Modules depend in one direction: configuracion → viviendas → familias → habitantes → talentos → proyectos → reportes. `seguridad` and `shared` are available to all.
 
-`src/modules/seguridad/` is the reference implementation for new modules.
+`src/modules/seguridad/` is the reference implementation for new modules. When an earlier module's screen must show a later module's data, such as families on the vivienda page, compose both components in the `src/app/` page so the module dependency stays one-way.
 
 ### Authentication
 
@@ -79,6 +79,7 @@ Form actions have the signature `(estado: EstadoFormulario, formData: FormData)`
 - Don't `await` the session at the top level of a layout.
 - `usePathname` needs a `<Suspense>` parent on layouts above dynamic routes.
 - `params` is a Promise; await it inside the Suspense boundary.
+- Convert Prisma `Decimal` values to strings in `queries.ts`; they can't be passed to client components.
 
 ## Tooling notes
 

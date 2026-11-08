@@ -102,6 +102,26 @@ export function CampoSelect({
   );
 }
 
+type CampoCasillaProps = {
+  name: string;
+  etiqueta: string;
+  defaultChecked?: boolean;
+};
+
+export function CampoCasilla({ name, etiqueta, defaultChecked }: CampoCasillaProps) {
+  return (
+    <label className="flex items-center gap-3 text-base">
+      <input
+        type="checkbox"
+        name={name}
+        className="size-5 accent-primary"
+        defaultChecked={defaultChecked}
+      />
+      {etiqueta}
+    </label>
+  );
+}
+
 export function AvisoFormulario({ estado }: { estado: EstadoFormulario }) {
   if (estado.error) {
     return (
