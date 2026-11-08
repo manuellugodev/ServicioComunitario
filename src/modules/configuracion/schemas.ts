@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ID_CONFIGURACION = 1;
 
-export const CATALOGOS = ["sector", "tipo_vivienda"] as const;
+export const CATALOGOS = ["sector", "tipo_vivienda", "categoria_talento"] as const;
 
 export type Catalogo = (typeof CATALOGOS)[number];
 

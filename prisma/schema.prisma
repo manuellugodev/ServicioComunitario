@@ -180,10 +180,53 @@ model Habitante {
   creadoPorId        Int             @map("creado_por")
   nucleo             NucleoFamiliar  @relation(fields: [nucleoId], references: [id])
   creadoPor          Usuario         @relation(fields: [creadoPorId], references: [id])
+  talentos           HabitanteTalento[]
 
   @@unique([nacionalidad, cedula])
   @@index([nucleoId])
   @@map("habitante")
+}
+
+model CategoriaTalento {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique @db.VarChar(80)
+  talentos Talento[]
+
+  @@map("categoria_talento")
+}
+
+model Talento {
+  id          Int                @id @default(autoincrement())
+  categoriaId Int                @map("categoria_id")
+  nombre      String             @unique @db.VarChar(80)
+  categoria   CategoriaTalento   @relation(fields: [categoriaId], references: [id])
+  habitantes  HabitanteTalento[]
+
+  @@index([categoriaId])
+  @@map("talento")
+}
+
+enum NivelTalento {
+  BASICO
+  INTERMEDIO
+  AVANZADO
+
+  @@map("nivel_talento")
+}
+
+model HabitanteTalento {
+  habitanteId      Int          @map("habitante_id")
+  talentoId        Int          @map("talento_id")
+  nivel            NivelTalento
+  aniosExperiencia Int          @default(0) @map("anios_experiencia") @db.SmallInt
+  certificado      Boolean      @default(false)
+  disponible       Boolean      @default(true)
+  habitante        Habitante    @relation(fields: [habitanteId], references: [id])
+  talento          Talento      @relation(fields: [talentoId], references: [id])
+
+  @@id([habitanteId, talentoId])
+  @@index([talentoId])
+  @@map("habitante_talento")
 }
 
 model Configuracion {

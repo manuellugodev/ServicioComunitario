@@ -24,7 +24,7 @@ import { requerirSesion } from "@/shared/lib/sesion";
 const RUTA = "/configuracion";
 const ERROR_DUPLICADO = "Ya existe un registro con ese nombre.";
 const ERROR_NO_ENCONTRADO = "Ese registro ya no existe.";
-const ERROR_EN_USO = "No se puede eliminar porque hay viviendas que lo usan.";
+const ERROR_EN_USO = "No se puede eliminar porque hay registros que lo usan.";
 
 type Tx = Prisma.TransactionClient;
 type Elemento = { id: number; nombre: string };
@@ -44,6 +44,11 @@ const OPERACIONES: Record<Catalogo, Operaciones> = {
     crear: (tx, nombre) => tx.tipoVivienda.create({ data: { nombre } }),
     editar: (tx, id, nombre) => tx.tipoVivienda.update({ where: { id }, data: { nombre } }),
     eliminar: (tx, id) => tx.tipoVivienda.delete({ where: { id } }),
+  },
+  categoria_talento: {
+    crear: (tx, nombre) => tx.categoriaTalento.create({ data: { nombre } }),
+    editar: (tx, id, nombre) => tx.categoriaTalento.update({ where: { id }, data: { nombre } }),
+    eliminar: (tx, id) => tx.categoriaTalento.delete({ where: { id } }),
   },
 };
 

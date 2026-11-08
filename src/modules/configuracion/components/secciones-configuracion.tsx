@@ -1,16 +1,18 @@
 import { FormularioNombreConsejo } from "@/modules/configuracion/components/formulario-nombre-consejo";
 import { ListaCatalogo } from "@/modules/configuracion/components/lista-catalogo";
 import {
+  listarCategoriasTalento,
   listarSectores,
   listarTiposVivienda,
   obtenerNombreConsejo,
 } from "@/modules/configuracion/queries";
 
 export async function SeccionesConfiguracion() {
-  const [nombre, sectores, tipos] = await Promise.all([
+  const [nombre, sectores, tipos, categorias] = await Promise.all([
     obtenerNombreConsejo(),
     listarSectores(),
     listarTiposVivienda(),
+    listarCategoriasTalento(),
   ]);
 
   return (
@@ -25,6 +27,12 @@ export async function SeccionesConfiguracion() {
         singular="tipo de vivienda"
         catalogo="tipo_vivienda"
         elementos={tipos}
+      />
+      <ListaCatalogo
+        titulo="Categorías de talento"
+        singular="categoría"
+        catalogo="categoria_talento"
+        elementos={categorias}
       />
     </div>
   );

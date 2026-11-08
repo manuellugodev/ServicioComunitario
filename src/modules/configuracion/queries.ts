@@ -19,6 +19,11 @@ export async function listarSectores() {
   return db.sector.findMany({ orderBy: { nombre: "asc" } });
 }
 
+export async function listarCategoriasTalento() {
+  await requerirSesion();
+  return db.categoriaTalento.findMany({ orderBy: { nombre: "asc" } });
+}
+
 export async function listarTiposVivienda() {
   await requerirSesion();
   return db.tipoVivienda.findMany({ orderBy: { nombre: "asc" } });

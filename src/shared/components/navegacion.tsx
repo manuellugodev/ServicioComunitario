@@ -27,7 +27,7 @@ const ENLACES: Enlace[] = [
   { href: "/", etiqueta: "Panel principal", icono: LayoutDashboard, listo: true },
   { href: "/viviendas", etiqueta: "Viviendas", icono: House, listo: true },
   { href: "/habitantes", etiqueta: "Habitantes", icono: Users, listo: true },
-  { href: "/talentos", etiqueta: "Talentos", icono: Wrench, listo: false },
+  { href: "/talentos", etiqueta: "Talentos", icono: Wrench, listo: true },
   { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban, listo: false },
   { href: "/reportes", etiqueta: "Reportes", icono: FileText, listo: false },
   { href: "/usuarios", etiqueta: "Usuarios", icono: UserCog, listo: true },

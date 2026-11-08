@@ -59,6 +59,7 @@ export function CampoTexto({ name, etiqueta, errores, ...props }: CampoTextoProp
 
 type CampoSelectProps = {
   name: string;
+  id?: string;
   etiqueta: string;
   opciones: { valor: string | number; etiqueta: string }[];
   // Texto de una primera opción sin valor, como "Selecciona…" o "Todos".
@@ -66,29 +67,33 @@ type CampoSelectProps = {
   defaultValue?: string;
   required?: boolean;
   errores?: string[];
+  onChange?: (valor: string) => void;
 };
 
 export function CampoSelect({
   name,
+  id = name,
   etiqueta,
   opciones,
   vacio,
   defaultValue,
   required,
   errores,
+  onChange,
 }: CampoSelectProps) {
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={name}>{etiqueta}</Label>
+      <Label htmlFor={id}>{etiqueta}</Label>
       {/* La key restaura la selección: React la pierde al limpiar el formulario. */}
       <NativeSelect
         key={defaultValue}
-        id={name}
+        id={id}
         name={name}
         className="w-full [&_select]:h-10 [&_select]:text-base"
         defaultValue={defaultValue ?? ""}
         required={required}
         aria-invalid={errores ? true : undefined}
+        onChange={onChange && ((evento) => onChange(evento.target.value))}
       >
         {vacio && <NativeSelectOption value="">{vacio}</NativeSelectOption>}
         {opciones.map((opcion) => (
