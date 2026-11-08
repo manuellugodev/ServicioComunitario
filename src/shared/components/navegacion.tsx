@@ -25,7 +25,7 @@ type Enlace = {
 
 const ENLACES: Enlace[] = [
   { href: "/", etiqueta: "Panel principal", icono: LayoutDashboard, listo: true },
-  { href: "/viviendas", etiqueta: "Viviendas", icono: House, listo: false },
+  { href: "/viviendas", etiqueta: "Viviendas", icono: House, listo: true },
   { href: "/habitantes", etiqueta: "Habitantes", icono: Users, listo: false },
   { href: "/talentos", etiqueta: "Talentos", icono: Wrench, listo: false },
   { href: "/proyectos", etiqueta: "Proyectos", icono: FolderKanban, listo: false },

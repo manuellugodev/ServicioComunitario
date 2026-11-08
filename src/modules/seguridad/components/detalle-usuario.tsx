@@ -4,11 +4,12 @@ import { BotonEstadoUsuario } from "@/modules/seguridad/components/boton-estado-
 import { FormularioRestablecerContrasena } from "@/modules/seguridad/components/formulario-restablecer-contrasena";
 import { FormularioUsuario } from "@/modules/seguridad/components/formulario-usuario";
 import { obtenerUsuario } from "@/modules/seguridad/queries";
+import { aIdPositivo } from "@/shared/lib/acciones";
 
 export async function DetalleUsuario({ idTexto }: { idTexto: Promise<string> }) {
-  const id = Number(await idTexto);
-  const usuario = Number.isSafeInteger(id) && id > 0 ? await obtenerUsuario(id) : null;
-  if (!usuario) {
+  const id = aIdPositivo(await idTexto);
+  const usuario = id ? await obtenerUsuario(id) : null;
+  if (!id || !usuario) {
     notFound();
   }
 

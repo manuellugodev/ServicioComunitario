@@ -30,6 +30,7 @@ model Usuario {
   activo         Boolean    @default(true)
   creadoEn       DateTime   @default(now()) @map("creado_en")
   bitacora       Bitacora[]
+  viviendas      Vivienda[]
 
   @@map("usuario")
 }
@@ -49,17 +50,53 @@ model Bitacora {
 }
 
 model TipoVivienda {
-  id     Int    @id @default(autoincrement())
-  nombre String @unique @db.VarChar(80)
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique @db.VarChar(80)
+  viviendas Vivienda[]
 
   @@map("tipo_vivienda")
 }
 
 model Sector {
-  id     Int    @id @default(autoincrement())
-  nombre String @unique @db.VarChar(80)
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique @db.VarChar(80)
+  viviendas Vivienda[]
 
   @@map("sector")
+}
+
+enum Tenencia {
+  PROPIA
+  ALQUILADA
+  PRESTADA
+  INVADIDA
+  OTRA
+
+  @@map("tenencia")
+}
+
+model Vivienda {
+  id             Int          @id @default(autoincrement())
+  codigo         String       @unique @db.VarChar(15)
+  sectorId       Int          @map("sector_id")
+  direccion      String       @db.VarChar(200)
+  tipoViviendaId Int          @map("tipo_vivienda_id")
+  tenencia       Tenencia?
+  agua           Boolean      @default(false)
+  electricidad   Boolean      @default(false)
+  gas            Boolean      @default(false)
+  aseo           Boolean      @default(false)
+  internet       Boolean      @default(false)
+  observaciones  String?
+  creadoEn       DateTime     @default(now()) @map("creado_en")
+  actualizadoEn  DateTime     @updatedAt @map("actualizado_en")
+  creadoPorId    Int          @map("creado_por")
+  sector         Sector       @relation(fields: [sectorId], references: [id])
+  tipoVivienda   TipoVivienda @relation(fields: [tipoViviendaId], references: [id])
+  creadoPor      Usuario      @relation(fields: [creadoPorId], references: [id])
+
+  @@index([sectorId])
+  @@map("vivienda")
 }
 
 model Configuracion {

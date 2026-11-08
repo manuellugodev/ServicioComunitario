@@ -11,7 +11,7 @@ Web system for the demographic census and neighbor talents of Consejo Comunal Al
 - `Design System.md` is the authoritative requirements document (RF/RNF codes, data dictionary, roles, screens). Despite its name it is a system design document, not a UI design system.
 - `docs/ARQUITECTURA.md` defines the folder structure, layering rules and build order. Read both before starting a module.
 
-Stages 0 (base), 1 (M1 Seguridad) and 2 (M8 catalogs and council name) are built. Next is Stage 3 (M2 Viviendas). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
+Stages 0 (base), 1 (M1 Seguridad), 2 (M8 catalogs and council name) and 3 (M2 Viviendas) are built. Next is Stage 4 (M3 Familias). Build one module at a time, in the order given in `docs/ARQUITECTURA.md`.
 
 ## Working with this user
 
@@ -69,7 +69,7 @@ Form actions have the signature `(estado: EstadoFormulario, formData: FormData)`
 3. `db.$transaction` containing the write and `registrarBitacora(tx, ...)`
 4. `revalidatePath`, then `redirect` outside any `try`, because `redirect` throws
 
-`src/shared/lib/acciones.ts` has the shared helpers: `aErrores`, `sinContrasenas`, and `esDuplicado`, `estaEnUso` and `noExiste` for Prisma errors. Use `BotonConfirmar` for actions that need confirmation. Do slow work such as bcrypt hashing outside the transaction. Validate string arguments bound to an action, such as `catalogo`, since clients can tamper with them.
+`src/shared/lib/acciones.ts` has the shared helpers: `aErrores`, `sinContrasenas`, `aIdPositivo` for ids from URLs, and `esDuplicado`, `violaReferencia` and `noExiste` for Prisma errors. Use `BotonConfirmar` for actions that need confirmation. Do slow work such as bcrypt hashing outside the transaction. Validate string arguments bound to an action, such as `catalogo`, since clients can tamper with them.
 
 ### Cache Components
 

@@ -2,10 +2,8 @@
 
 import { useActionState } from "react";
 import { ETIQUETAS_ROL, ROLES } from "@/modules/seguridad/schemas";
-import { AvisoFormulario, Campo } from "@/shared/components/campo";
+import { AvisoFormulario, Campo, CampoSelect } from "@/shared/components/campo";
 import { Button } from "@/shared/components/ui/button";
-import { Label } from "@/shared/components/ui/label";
-import { NativeSelect, NativeSelectOption } from "@/shared/components/ui/native-select";
 import type { EstadoFormulario } from "@/shared/lib/formularios";
 
 type Valores = {
@@ -59,21 +57,13 @@ export function FormularioUsuario({ accionServidor, usuario }: Props) {
           errores={estado.errores?.contrasena}
         />
       )}
-      <div className="grid gap-1.5">
-        <Label htmlFor="rol">Rol</Label>
-        <NativeSelect id="rol" name="rol" className="w-full" defaultValue={valorDe("rol") ?? "VOCERO"}>
-          {ROLES.map((rol) => (
-            <NativeSelectOption key={rol} value={rol}>
-              {ETIQUETAS_ROL[rol]}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
-        {estado.errores?.rol?.map((error) => (
-          <p key={error} className="text-sm text-destructive">
-            {error}
-          </p>
-        ))}
-      </div>
+      <CampoSelect
+        name="rol"
+        etiqueta="Rol"
+        opciones={ROLES.map((rol) => ({ valor: rol, etiqueta: ETIQUETAS_ROL[rol] }))}
+        defaultValue={valorDe("rol") ?? "VOCERO"}
+        errores={estado.errores?.rol}
+      />
       <AvisoFormulario estado={estado} />
       <Button type="submit" size="lg" disabled={pendiente} className="w-fit">
         {pendiente ? "Guardando…" : "Guardar"}

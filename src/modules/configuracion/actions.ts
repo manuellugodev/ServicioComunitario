@@ -12,9 +12,9 @@ import {
 import {
   aErrores,
   esDuplicado,
-  estaEnUso,
   noExiste,
   sinContrasenas,
+  violaReferencia,
 } from "@/shared/lib/acciones";
 import { registrarBitacora } from "@/shared/lib/bitacora";
 import { db } from "@/shared/lib/db";
@@ -108,7 +108,7 @@ export async function eliminarElemento(
       });
     });
   } catch (error) {
-    if (estaEnUso(error)) {
+    if (violaReferencia(error)) {
       return { error: ERROR_EN_USO };
     }
     if (noExiste(error)) {

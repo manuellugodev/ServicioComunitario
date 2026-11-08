@@ -21,5 +21,12 @@ function tieneCodigo(error: unknown, codigo: string) {
 }
 
 export const esDuplicado = (error: unknown) => tieneCodigo(error, "P2002");
-export const estaEnUso = (error: unknown) => tieneCodigo(error, "P2003");
+export const violaReferencia = (error: unknown) => tieneCodigo(error, "P2003");
 export const noExiste = (error: unknown) => tieneCodigo(error, "P2025");
+
+const MAXIMO_ENTERO_POSTGRES = 2147483647;
+
+export function aIdPositivo(valor: unknown) {
+  const numero = typeof valor === "string" ? Number(valor) : NaN;
+  return Number.isInteger(numero) && numero > 0 && numero <= MAXIMO_ENTERO_POSTGRES ? numero : null;
+}
