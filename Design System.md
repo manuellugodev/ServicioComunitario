@@ -241,7 +241,7 @@ Navegación con menú lateral (en móvil, menú desplegable). El nombre del cons
 | Panel principal | Tarjetas con totales (viviendas, familias, habitantes, talentos, proyectos activos); gráficos de pirámide poblacional y talentos por categoría | Todos |
 | Viviendas | Tabla filtrable por sector; botón "Nueva vivienda"; ficha de vivienda con sus familias | Vocero / Consulta (solo lectura) |
 | Ficha de familia | Datos del núcleo, lista de miembros, botón "Agregar miembro" | Vocero |
-| Formulario de habitante | Pasos: datos personales → educación y trabajo → salud → talentos | Vocero |
+| Formulario de habitante | Pasos: datos personales → educación y trabajo → salud; los talentos se agregan desde la ficha del habitante | Vocero |
 | Buscador de talentos | Filtros (categoría, talento, sector, nivel, disponibilidad) y resultados con contacto | Vocero / Consulta |
 | Proyectos | Lista por estado; ficha con talentos requeridos, vecinos sugeridos y asignados | Vocero / Consulta (solo lectura) |
 | Reportes | Selector de reporte, filtros, vista previa, botones PDF / Excel | Vocero / Consulta |

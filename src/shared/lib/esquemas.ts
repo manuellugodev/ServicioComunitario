@@ -7,6 +7,25 @@ export const casilla = z
   .optional()
   .transform((valor) => valor === "on");
 
+export const fechaOpcional = z
+  .string()
+  .trim()
+  .transform((valor, contexto) => {
+    if (!valor) {
+      return null;
+    }
+    const fecha = new Date(`${valor}T00:00:00.000Z`);
+    const valida =
+      /^\d{4}-\d{2}-\d{2}$/.test(valor) &&
+      !Number.isNaN(fecha.getTime()) &&
+      fecha.toISOString().startsWith(valor);
+    if (!valida) {
+      contexto.addIssue({ code: "custom", message: "Escribe una fecha válida." });
+      return z.NEVER;
+    }
+    return fecha;
+  });
+
 export const observaciones = z
   .string()
   .trim()

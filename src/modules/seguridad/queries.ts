@@ -16,6 +16,16 @@ export async function listarUsuarios() {
   return db.usuario.findMany({ select: CAMPOS_PUBLICOS, orderBy: { nombreCompleto: "asc" } });
 }
 
+// incluirId conserva en la lista a un responsable que luego fue desactivado.
+export async function listarUsuariosActivos(incluirId?: number) {
+  await requerirSesion();
+  return db.usuario.findMany({
+    where: { OR: [{ activo: true }, { id: incluirId }] },
+    select: { id: true, nombreCompleto: true },
+    orderBy: { nombreCompleto: "asc" },
+  });
+}
+
 export async function obtenerUsuario(id: number) {
   await requerirSesion();
   return db.usuario.findUnique({ where: { id }, select: CAMPOS_PUBLICOS });

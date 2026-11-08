@@ -33,6 +33,8 @@ model Usuario {
   viviendas      Vivienda[]
   nucleos        NucleoFamiliar[]
   habitantes     Habitante[]
+  proyectosResponsable Proyecto[] @relation("ResponsableProyecto")
+  proyectosCreados     Proyecto[] @relation("CreadorProyecto")
 
   @@map("usuario")
 }
@@ -201,6 +203,7 @@ model Talento {
   nombre      String             @unique @db.VarChar(80)
   categoria   CategoriaTalento   @relation(fields: [categoriaId], references: [id])
   habitantes  HabitanteTalento[]
+  proyectos   ProyectoTalento[]
 
   @@index([categoriaId])
   @@map("talento")
@@ -223,10 +226,67 @@ model HabitanteTalento {
   disponible       Boolean      @default(true)
   habitante        Habitante    @relation(fields: [habitanteId], references: [id])
   talento          Talento      @relation(fields: [talentoId], references: [id])
+  participaciones  ProyectoParticipante[]
 
   @@id([habitanteId, talentoId])
   @@index([talentoId])
   @@map("habitante_talento")
+}
+
+enum EstadoProyecto {
+  PROPUESTO
+  EN_EJECUCION
+  PAUSADO
+  CULMINADO
+
+  @@map("estado_proyecto")
+}
+
+model Proyecto {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(150)
+  descripcion   String?
+  responsableId Int             @map("responsable_id")
+  fechaInicio   DateTime?       @map("fecha_inicio") @db.Date
+  fechaFin      DateTime?       @map("fecha_fin") @db.Date
+  estado        EstadoProyecto  @default(PROPUESTO)
+  creadoEn      DateTime        @default(now()) @map("creado_en")
+  actualizadoEn DateTime        @updatedAt @map("actualizado_en")
+  creadoPorId   Int             @map("creado_por")
+  responsable   Usuario         @relation("ResponsableProyecto", fields: [responsableId], references: [id])
+  creadoPor     Usuario         @relation("CreadorProyecto", fields: [creadoPorId], references: [id])
+  talentos      ProyectoTalento[]
+
+  @@index([responsableId])
+  @@map("proyecto")
+}
+
+model ProyectoTalento {
+  proyectoId        Int                    @map("proyecto_id")
+  talentoId         Int                    @map("talento_id")
+  cantidadRequerida Int                    @map("cantidad_requerida")
+  proyecto          Proyecto               @relation(fields: [proyectoId], references: [id])
+  talento           Talento                @relation(fields: [talentoId], references: [id])
+  participantes     ProyectoParticipante[]
+
+  @@id([proyectoId, talentoId])
+  @@index([talentoId])
+  @@map("proyecto_talento")
+}
+
+model ProyectoParticipante {
+  proyectoId      Int              @map("proyecto_id")
+  habitanteId     Int              @map("habitante_id")
+  talentoId       Int              @map("talento_id")
+  rol             String?          @db.VarChar(80)
+  fechaAsignacion DateTime         @map("fecha_asignacion") @db.Date
+  requerimiento   ProyectoTalento  @relation(fields: [proyectoId, talentoId], references: [proyectoId, talentoId])
+  posesion        HabitanteTalento @relation(fields: [habitanteId, talentoId], references: [habitanteId, talentoId])
+
+  @@id([proyectoId, habitanteId, talentoId])
+  @@index([habitanteId, talentoId])
+  @@index([proyectoId, talentoId])
+  @@map("proyecto_participante")
 }
 
 model Configuracion {

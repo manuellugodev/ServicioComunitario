@@ -81,7 +81,7 @@ export async function eliminarTalentoCatalogo(id: number): Promise<EstadoFormula
     });
   } catch (error) {
     if (violaReferencia(error)) {
-      return { error: "No se puede eliminar porque hay vecinos con este talento." };
+      return { error: "No se puede eliminar porque hay vecinos o proyectos que lo usan." };
     }
     if (noExiste(error)) {
       return { error: ERROR_NO_ENCONTRADO };
@@ -188,6 +188,9 @@ export async function quitarTalento(
       });
     });
   } catch (error) {
+    if (violaReferencia(error)) {
+      return { error: "No se puede quitar porque está asignado a un proyecto con este talento." };
+    }
     if (noExiste(error)) {
       return { error: ERROR_NO_ENCONTRADO };
     }
