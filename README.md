@@ -132,13 +132,7 @@ Para tener viviendas, familias y habitantes ficticios con los que probar:
 npm run db:demo
 ```
 
-Puedes indicar cuántas viviendas crear: `npm run db:demo -- 300`
-
-Para borrar todos los datos de prueba (hazlo antes de cargar datos reales):
-
-```bash
-npm run db:demo:borrar
-```
+La sección [Datos de prueba](#datos-de-prueba) explica todo lo que crea y cómo borrarlo.
 
 ### Paso 9. Iniciar el sistema
 
@@ -171,6 +165,71 @@ npx prisma migrate deploy
 ```
 
 para instalar dependencias nuevas y aplicar las migraciones nuevas.
+
+## Datos de prueba
+
+Los datos de prueba son ficticios y sirven para probar el sistema y capacitar a los voceros sin usar datos reales. Necesitas haber hecho antes los pasos 4 a 7 (base de datos, `.env`, tablas y administrador).
+
+### Cargar los datos
+
+```bash
+npm run db:demo
+```
+
+Crea **120 viviendas** por defecto. Para crear otra cantidad (entre 1 y 2000), escribe el número después de `--`:
+
+```bash
+npm run db:demo -- 300
+```
+
+> El `--` es necesario: le indica a npm que el número es para el script.
+
+Al terminar muestra un resumen, por ejemplo:
+
+```
+Datos de prueba cargados: 120 viviendas, ... familias, ... habitantes, ... talentos asignados y ... proyectos.
+Usuarios de prueba: demo.vocero y demo.consulta (contraseña: ADMIN_PASSWORD de .env).
+```
+
+Con muchas viviendas puede tardar unos minutos.
+
+### Qué se crea
+
+| Dato | Cómo reconocerlo |
+|---|---|
+| 5 sectores | Su nombre empieza con `Demo - Sector` |
+| Viviendas | Su código empieza con `DEMO-` |
+| Familias y habitantes | Están dentro de las viviendas de prueba. Los nombres son venezolanos comunes, inventados |
+| Talentos | Se agregan algunos talentos a los catálogos y se asignan a habitantes |
+| 5 proyectos | Su nombre empieza con `Demo - ` y tienen distintos estados (propuesto, en ejecución, pausado, culminado) |
+| 2 usuarios | `demo.vocero` (rol Vocero) y `demo.consulta` (rol Consulta) |
+
+Los datos salen siempre iguales: si los borras y los vuelves a cargar con la misma cantidad, obtienes las mismas personas.
+
+### Probar los roles
+
+Los usuarios de prueba usan la **misma contraseña que `ADMIN_PASSWORD`** del `.env`. Sirven para ver qué puede hacer cada rol:
+
+- **`admin`**: todo, incluidos usuarios, catálogos y respaldos.
+- **`demo.vocero`**: puede registrar y editar el censo y los proyectos.
+- **`demo.consulta`**: solo puede ver. Los datos de salud y discapacidad le aparecen solo como totales.
+
+### Borrar los datos
+
+```bash
+npm run db:demo:borrar
+```
+
+Borra todo lo de la tabla anterior. Ten en cuenta que **también borra cualquier cosa que se haya registrado iniciando sesión como `demo.vocero` o `demo.consulta`**, y sus registros en la bitácora. Lo que registraste como `admin` u otros usuarios reales no se toca.
+
+**Borra siempre los datos de prueba antes de empezar a cargar datos reales.**
+
+### Si algo sale mal
+
+- **"Los datos de prueba ya están cargados"**: ya los habías cargado. Para cargarlos de nuevo (por ejemplo con otra cantidad), primero ejecuta `npm run db:demo:borrar`.
+- **"Define ADMIN_PASSWORD en el archivo .env"**: falta esa línea en el `.env` (paso 5).
+- **"Indica un número de viviendas entre 1 y 2000"**: el número después de `--` no es válido.
+- **"Los datos de prueba no se pueden usar en producción"**: el script no funciona en el servidor real (`NODE_ENV=production`), para proteger los datos verdaderos.
 
 ## Comandos útiles
 
